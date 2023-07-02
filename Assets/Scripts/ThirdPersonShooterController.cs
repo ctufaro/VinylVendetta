@@ -11,7 +11,7 @@ public class ThirdPersonShooterController : MonoBehaviour {
 	[SerializeField] private float normalSensitivity;
 	[SerializeField] private float aimSensitivity;
 	[SerializeField] private LayerMask aimColliderLayerMask = new LayerMask();
-	[SerializeField] private Transform debugTransform;
+	//[SerializeField] private Transform debugTransform;
 	[SerializeField] private Transform pfBulletProjectile;
 	[SerializeField] private Transform spawnBulletPosition;
 	[SerializeField] private Transform vfxHitGreen;
@@ -38,9 +38,13 @@ public class ThirdPersonShooterController : MonoBehaviour {
 		Ray ray = Camera.main.ScreenPointToRay(screenCenterPoint);
 		Transform hitTransform = null;
 		if (Physics.Raycast(ray, out RaycastHit raycastHit, 999f, aimColliderLayerMask)) {
-			debugTransform.position = raycastHit.point;
+			//debugTransform.position = raycastHit.point;
 			mouseWorldPosition = raycastHit.point;
 			hitTransform = raycastHit.transform;
+		}
+        else
+        {
+			mouseWorldPosition = ray.GetPoint(10);
 		}
 
 		if (starterAssetsInputs.aim) {
@@ -49,12 +53,11 @@ public class ThirdPersonShooterController : MonoBehaviour {
 			thirdPersonController.SetRotateOnMove(false);
 			animator.SetLayerWeight(1, Mathf.Lerp(animator.GetLayerWeight(1), 1f, Time.deltaTime * 13f));
 
-			Vector3 worldAimTarget = mouseWorldPosition;
-			worldAimTarget.y = transform.position.y;
-			Vector3 aimDirection = (worldAimTarget - transform.position).normalized;
-
-			transform.forward = Vector3.Lerp(transform.forward, aimDirection, Time.deltaTime * 20f);
-		} else {
+            Vector3 worldAimTarget = mouseWorldPosition;
+            worldAimTarget.y = transform.position.y;
+            Vector3 aimDirection = (worldAimTarget - transform.position).normalized;
+            transform.forward = Vector3.Lerp(transform.forward, aimDirection, Time.deltaTime * 20f);
+        } else {
 			aimVirtualCamera.gameObject.SetActive(false);
 			thirdPersonController.SetSensitivity(normalSensitivity);
 			thirdPersonController.SetRotateOnMove(true);
@@ -71,7 +74,7 @@ public class ThirdPersonShooterController : MonoBehaviour {
 			}
 			
 			// Hit Scan Shoot
-			/*
+			
 			if (hitTransform != null) {
 				// Hit something
 				if (hitTransform.GetComponent<BulletTarget>() != null) {
@@ -82,12 +85,12 @@ public class ThirdPersonShooterController : MonoBehaviour {
 					Instantiate(vfxHitRed, mouseWorldPosition, Quaternion.identity);
 				}
 			}
-			*/
+			
 			//
 			
 			// Projectile Shoot
-			Vector3 aimDir = (mouseWorldPosition - spawnBulletPosition.position).normalized;
-			Instantiate(pfBulletProjectile, spawnBulletPosition.position, Quaternion.LookRotation(aimDir, Vector3.up));
+			//Vector3 aimDir = (mouseWorldPosition - spawnBulletPosition.position).normalized;
+			//Instantiate(pfBulletProjectile, spawnBulletPosition.position, Quaternion.LookRotation(aimDir, Vector3.up));
 
 			//
 			starterAssetsInputs.shoot = false;

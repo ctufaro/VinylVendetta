@@ -37,6 +37,10 @@ namespace StarterAssets
 		[Tooltip("The height the player can jump")]
 		public float JumpHeight = 1.2f;
 
+		[Space(10)]
+		[Tooltip("Character has a super jump")]
+		public bool SuperJump = false;
+
 		[Tooltip("The character uses its own gravity value. The engine default is -9.81f")]
 		public float Gravity = -15.0f;
 
@@ -154,7 +158,7 @@ namespace StarterAssets
 			_fallTimeoutDelta = FallTimeout;
 		}
 
-		private void Update()
+        private void Update()
 		{
 			_hasAnimator = TryGetComponent(out _animator);
 
@@ -308,7 +312,7 @@ namespace StarterAssets
 				if (_input.jump && _jumpTimeoutDelta <= 0.0f)
 				{
 					// the square root of H * -2 * G = how much velocity needed to reach desired height
-					_verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
+					_verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity * ((SuperJump) ? 20 : 1));
 
 					// update animator if using character
 					if (_hasAnimator)
@@ -403,5 +407,5 @@ namespace StarterAssets
 				AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
 			}
 		}
-	}
+    }
 }

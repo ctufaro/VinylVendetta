@@ -55,6 +55,7 @@ namespace StarterAssets
 		{
 			AimInput(value.isPressed);
 		}
+
 #endif
 
 
@@ -97,6 +98,8 @@ namespace StarterAssets
 		{
 			Cursor.lockState = newState ? CursorLockMode.Locked : CursorLockMode.None;
 		}
+
+		
 	}
 	
 }
