@@ -17,7 +17,7 @@ public class InputManager : Singleton<InputManager>
         KeyPress("3");
         KeyPress("4");
         KeyPress("5");
-        scrollAction.action.performed += OnScroll;
+
     }
 
     private void KeyPress(string key)
@@ -29,11 +29,16 @@ public class InputManager : Singleton<InputManager>
 
     private void ToggleActive(string key)
     {
-        int parsed = Convert.ToInt32(key);        
+        int parsed = Convert.ToInt32(key);
         if (!players[parsed - 1].activeSelf)
         {
-            foreach (GameObject obj in players) {obj.SetActive(false);}
+            foreach (GameObject obj in players)
+            {
+                if (obj.activeSelf)
+                    obj.SetActive(false);
+            }
             players[parsed - 1].SetActive(true);
+            Debug.Log($"{players[parsed - 1].name} is active");
             value = parsed;
         }
     }
@@ -57,16 +62,29 @@ public class InputManager : Singleton<InputManager>
                 value = 5;
         }
         ToggleActive(value.ToString());
-        Debug.Log($"Scroll:{ value.ToString()}");
+        //SetCursorToScreenCenter();
+        //Debug.Log($"Scroll:{ value.ToString()}");
     }
 
     void OnEnable()
     {
+        Debug.Log("Inout Manager Enabled");
         scrollAction.action.Enable();
+        scrollAction.action.performed += OnScroll;
     }
 
     void OnDisable()
     {
+        Debug.Log("Inout Manager Disabled");
         scrollAction.action.Disable();
+        scrollAction.action.performed -= OnScroll;
+    }
+
+    private void SetCursorToScreenCenter()
+    {
+        // Set the mouse position to the center of the screen
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        Mouse.current.WarpCursorPosition(new Vector2(Screen.width / 2f, Screen.height / 2f));
     }
 }

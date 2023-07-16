@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: TSP_Atlas_1A_D
-  m_Shader: {fileID: 4800000, guid: 351ce1247dba4af4da084158ce52d889, type: 3}
+  m_Shader: {fileID: 4800000, guid: aa6105aee4f3b28428a0ba9177c4117a, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 6

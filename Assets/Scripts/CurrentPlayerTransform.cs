@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CurrentPlayerTransform : MonoBehaviour
 {
-    private GameObject parentObject;
+    private GameObject player;
     // Start is called before the first frame update
     void Start()
     {
@@ -15,10 +15,10 @@ public class CurrentPlayerTransform : MonoBehaviour
     void Update()
     {
         // Find the active GameObject with the "Player" tag
-        parentObject = GameObject.FindGameObjectWithTag("Player");
-        Transform playerCameraRoot = parentObject.transform.Find("PlayerCameraRoot");
+        player = GameObject.FindGameObjectWithTag("Player");
+        Transform playerCameraRoot = player.transform.Find("PlayerCameraRoot");
 
-        if (parentObject != null)
+        if (player != null)
         {
             this.transform.position = playerCameraRoot.position;
             this.transform.rotation = playerCameraRoot.rotation;
