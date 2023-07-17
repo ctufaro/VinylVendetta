@@ -4,6 +4,8 @@ using UnityEngine;
 using Cinemachine;
 using StarterAssets;
 using UnityEngine.InputSystem;
+using UnityEngine.Animations.Rigging;
+using UnityEngine.VFX;
 
 public class ThirdPersonShooterController : MonoBehaviour
 {
@@ -15,8 +17,10 @@ public class ThirdPersonShooterController : MonoBehaviour
     [SerializeField] private Transform aimTarget;
     [SerializeField] private Transform pfBulletProjectile;
     [SerializeField] private Transform spawnBulletPosition;
-    [SerializeField] private Transform vfxHitGreen;
+    [SerializeField] private Transform vfxHitYellow;
     [SerializeField] private Transform vfxHitRed;
+    [SerializeField] private Rig aimRig;
+    [SerializeField] private VisualEffect visualEffect;
 
     private ThirdPersonController thirdPersonController;
     private StarterAssetsInputs starterAssetsInputs;
@@ -51,19 +55,18 @@ public class ThirdPersonShooterController : MonoBehaviour
         }
 
         if (starterAssetsInputs.aim)
-        {
+        {            
             aimVirtualCamera.gameObject.SetActive(true);
             thirdPersonController.SetSensitivity(aimSensitivity);
             thirdPersonController.SetRotateOnMove(false);
-            animator.SetLayerWeight(1, Mathf.Lerp(animator.GetLayerWeight(1), 1f, Time.deltaTime * 13f));
-            
+            animator.SetLayerWeight(1, Mathf.Lerp(animator.GetLayerWeight(1), 1f, Time.deltaTime * 13f));            
+
             Vector3 worldAimTarget = mouseWorldPosition;
             worldAimTarget.y = transform.position.y;
             Vector3 aimDirection = (worldAimTarget - transform.position).normalized;
-            //transform.forward = Vector3.Lerp(transform.forward, aimDirection, Time.deltaTime * 20f); //bring back?
             Quaternion targetRotation = Quaternion.LookRotation(aimDirection);
             transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * 20f);
-            //Debug.Log($"transform.rotation: {transform.rotation}");
+            aimRig.weight = 1f;
         }
         else
         {
@@ -71,32 +74,23 @@ public class ThirdPersonShooterController : MonoBehaviour
             thirdPersonController.SetSensitivity(normalSensitivity);
             thirdPersonController.SetRotateOnMove(true);
             animator.SetLayerWeight(1, Mathf.Lerp(animator.GetLayerWeight(1), 0f, Time.deltaTime * 13f));
+            aimRig.weight = 0f;
         }
 
 
         if (starterAssetsInputs.shoot)
         {
-
+            visualEffect.Play();
             // play shoot SFX
             if (ShootSfx && !UseContinuousShootSound)
             {
-                m_ShootAudioSource.PlayOneShot(ShootSfx);
+                m_ShootAudioSource.Play();
+                Instantiate(vfxHitYellow, mouseWorldPosition, Quaternion.identity);
             }
-
-            // Hit Scan Shoot
-            if (hitTransform != null)
+            else
             {
-                // Hit something
-                if (hitTransform.GetComponent<BulletTarget>() != null)
-                {
-                    // Hit target
-                    Instantiate(vfxHitGreen, mouseWorldPosition, Quaternion.identity);
-                }
-                else
-                {
-                    // Hit something else
-                    Instantiate(vfxHitRed, mouseWorldPosition, Quaternion.identity);
-                }
+                // Hit something else
+                Instantiate(vfxHitRed, mouseWorldPosition, Quaternion.identity);
             }
             // Projectile Shoot
             //Vector3 aimDir = (mouseWorldPosition - spawnBulletPosition.position).normalized;
@@ -123,4 +117,5 @@ public class ThirdPersonShooterController : MonoBehaviour
         //animator = GetComponent<Animator>();
         //m_ShootAudioSource = GetComponent<AudioSource>();
     }
+
 }
