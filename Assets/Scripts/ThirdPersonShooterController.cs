@@ -21,6 +21,7 @@ public class ThirdPersonShooterController : MonoBehaviour
     [SerializeField] private Transform vfxHitRed;
     [SerializeField] private Rig aimRig;
     [SerializeField] private VisualEffect visualEffect;
+    [SerializeField] private bool hasWeapon;
 
     private ThirdPersonController thirdPersonController;
     private StarterAssetsInputs starterAssetsInputs;
@@ -54,29 +55,42 @@ public class ThirdPersonShooterController : MonoBehaviour
             mouseWorldPosition = ray.GetPoint(10);
         }
 
+        //if (starterAssetsInputs.aim)
+        //{
+        //    aimVirtualCamera.gameObject.SetActive(true);
+        //    thirdPersonController.SetSensitivity(aimSensitivity);
+        //    thirdPersonController.SetRotateOnMove(false);
+        //    animator.SetLayerWeight(1, Mathf.Lerp(animator.GetLayerWeight(1), 1f, Time.deltaTime * 13f));
+
+        //    Vector3 worldAimTarget = mouseWorldPosition;
+        //    worldAimTarget.y = transform.position.y;
+        //    Vector3 aimDirection = (worldAimTarget - transform.position).normalized;
+        //    Quaternion targetRotation = Quaternion.LookRotation(aimDirection);
+        //    transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * 20f);
+        //    aimRig.weight = 1f;
+        //}
+        //else
+        //{
+        //    aimVirtualCamera.gameObject.SetActive(false);
+        //    thirdPersonController.SetSensitivity(normalSensitivity);
+        //    thirdPersonController.SetRotateOnMove(true);
+        //    animator.SetLayerWeight(1, Mathf.Lerp(animator.GetLayerWeight(1), 0f, Time.deltaTime * 13f));
+        //    aimRig.weight = 0f;
+        //}
+
+        HoldWeapon(mouseWorldPosition);
         if (starterAssetsInputs.aim)
-        {            
+        {
             aimVirtualCamera.gameObject.SetActive(true);
             thirdPersonController.SetSensitivity(aimSensitivity);
-            thirdPersonController.SetRotateOnMove(false);
-            animator.SetLayerWeight(1, Mathf.Lerp(animator.GetLayerWeight(1), 1f, Time.deltaTime * 13f));            
-
-            Vector3 worldAimTarget = mouseWorldPosition;
-            worldAimTarget.y = transform.position.y;
-            Vector3 aimDirection = (worldAimTarget - transform.position).normalized;
-            Quaternion targetRotation = Quaternion.LookRotation(aimDirection);
-            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * 20f);
-            aimRig.weight = 1f;
+            //thirdPersonController.SetRotateOnMove(false);
         }
         else
         {
             aimVirtualCamera.gameObject.SetActive(false);
             thirdPersonController.SetSensitivity(normalSensitivity);
-            thirdPersonController.SetRotateOnMove(true);
-            animator.SetLayerWeight(1, Mathf.Lerp(animator.GetLayerWeight(1), 0f, Time.deltaTime * 13f));
-            aimRig.weight = 0f;
+            //thirdPersonController.SetRotateOnMove(true);
         }
-
 
         if (starterAssetsInputs.shoot)
         {
@@ -100,6 +114,19 @@ public class ThirdPersonShooterController : MonoBehaviour
 
     }
 
+    private void HoldWeapon(Vector3 mwp)
+    {
+        //aimVirtualCamera.gameObject.SetActive(false);
+        //thirdPersonController.SetSensitivity(aimSensitivity);
+        thirdPersonController.SetRotateOnMove(false);
+        animator.SetLayerWeight(1, Mathf.Lerp(animator.GetLayerWeight(1), 1f, Time.deltaTime * 13f));
+        Vector3 worldAimTarget = mwp;
+        worldAimTarget.y = transform.position.y;
+        Vector3 aimDirection = (worldAimTarget - transform.position).normalized;
+        Quaternion targetRotation = Quaternion.LookRotation(aimDirection);
+        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * 20f);
+        aimRig.weight = 1f;
+    }
     private void OnDisable()
     {
         //thirdPersonController = null;
